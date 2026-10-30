@@ -1,0 +1,17 @@
+{
+  "name": "@labuibu/contracts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./catalog": "./src/catalog.js",
+    "./commerce": "./src/commerce.js"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "zod": "^3.24.2"
+  }
+}

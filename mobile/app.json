@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "Labuibu",
+    "slug": "labuibu",
+    "scheme": "labuibu",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": { "supportsTablet": true, "bundleIdentifier": "com.labuibu.app" },
+    "android": { "package": "com.labuibu.app" },
+    "plugins": ["expo-secure-store"],
+    "runtimeVersion": { "policy": "appVersion" },
+    "updates": { "enabled": false }
+  }
+}

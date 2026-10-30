@@ -1,0 +1,31 @@
+{
+  "name": "labuibu",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=24.3 <25"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @labuibu/web --filter @labuibu/api dev",
+    "dev:web": "pnpm --filter @labuibu/web dev",
+    "dev:api": "pnpm --filter @labuibu/api dev",
+    "dev:mobile": "pnpm --filter @labuibu/mobile start",
+    "build": "pnpm --filter @labuibu/web build",
+    "test": "pnpm --filter @labuibu/contracts test && pnpm --filter @labuibu/api test",
+    "seed": "pnpm --filter @labuibu/api seed",
+    "mobile:check": "pnpm --filter @labuibu/mobile exec expo install --check",
+    "mobile:export": "pnpm --filter @labuibu/mobile export",
+    "catalog:refresh": "pnpm --filter @labuibu/api exec node src/seed.js --refresh-catalog",
+    "lint": "eslint web mobile backend packages eslint.config.mjs",
+    "format": "prettier --write \"{web,mobile,backend}/**/*.{js,jsx,cjs,css,json,html}\" \"packages/**/*.{js,json}\" package.json eslint.config.mjs .prettierrc.json",
+    "format:check": "prettier --check \"{web,mobile,backend}/**/*.{js,jsx,cjs,css,json,html}\" \"packages/**/*.{js,json}\" package.json eslint.config.mjs .prettierrc.json",
+    "check": "pnpm lint && pnpm format:check && pnpm test && pnpm build"
+  },
+  "devDependencies": {
+    "eslint": "9.39.1",
+    "eslint-plugin-react": "7.37.5",
+    "globals": "16.5.0",
+    "prettier": "3.6.2"
+  }
+}
