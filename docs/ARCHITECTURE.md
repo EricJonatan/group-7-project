@@ -27,3 +27,9 @@ API menghitung harga dari produk aktif, menolak item ganda/quantity tidak valid,
 Penghapusan produk menonaktifkan katalog. Penghapusan akun customer melalui API menghapus order customer sebelum menghapus pengguna. Akun admin dilindungi dari endpoint delete. Operasi hapus akun tidak memakai transaksi database; jika error terjadi di antara penghapusan order dan pengguna, pengguna dapat mencoba kembali. Untuk penggunaan produksi, pertimbangkan kebijakan retensi/audit dan transaksi sesuai kebutuhan bisnis.
 
 Rate limiter disimpan dalam memori proses; untuk beberapa instance API, gunakan shared store. Tidak tersedia refresh token, pemulihan kata sandi, verifikasi email, payment gateway, stock reservation, ongkir kurir nyata, atau upload gambar. Produk menggunakan path gambar bawaan atau URL HTTPS. Seluruh batasan ini terlihat di dokumentasi dan tidak disamarkan sebagai integrasi aktif.
+
+## Tipe data
+
+Semua aplikasi menggunakan TypeScript dengan `strict: true`. Kontrak API dan tipe domain berada di `packages/contracts/src/types.ts`, termasuk hasil inferensi skema Zod. Props React dan parameter navigasi React Native memiliki tipe tersendiri. Middleware Express menambahkan dokumen pengguna bertipe pada request setelah autentikasi.
+
+Data dari jaringan dan storage tetap perlu divalidasi saat runtime. TypeScript memeriksa pemakaian data dalam source; Zod memvalidasi payload API, sedangkan pembacaan receipt dan keranjang memeriksa bentuk data tersimpan.

@@ -4,10 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --watch src/server.js",
-    "start": "node src/server.js",
-    "seed": "node src/seed.js",
-    "test": "node --test --test-concurrency=1 test/*.test.js"
+    "dev": "node --watch src/server.ts",
+    "start": "node src/server.ts",
+    "seed": "node src/seed.ts",
+    "test": "node --test --test-concurrency=1 test/*.test.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "@labuibu/contracts": "workspace:*",

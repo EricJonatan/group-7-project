@@ -1,6 +1,6 @@
 # Labuibu
 
-Toko camilan labu rumahan: web React, mobile Expo, REST API Express, dan MongoDB. UI mengambil arah visual Ruang Kreasi Kayu (krem hangat, merah bata, judul serif, tata letak editorial), dengan identitas dan konten Labuibu. Thumbnail memakai foto makanan nyata; banner aneka produk merupakan ilustrasi AI. Keduanya bukan foto produksi Labuibu.
+Toko camilan labu rumahan: web React, app React Native/Expo, REST API Express, dan MongoDB. Semua source aplikasi dan paket bersama menggunakan TypeScript. UI mengambil arah visual Ruang Kreasi Kayu (krem hangat, merah bata, judul serif, tata letak editorial), dengan identitas dan konten Labuibu. Thumbnail memakai foto makanan nyata; banner aneka produk merupakan ilustrasi AI. Keduanya bukan foto produksi Labuibu.
 
 ## Struktur
 
@@ -71,6 +71,7 @@ Scan QR yang dicetak Expo CLI dengan Expo Go. QR lokal bergantung pada komputer 
 ```sh
 pnpm dev:web
 pnpm dev:api
+pnpm typecheck
 pnpm lint
 pnpm format:check
 pnpm test
@@ -91,25 +92,25 @@ Pembayaran masih berupa pencatatan pilihan transfer/COD dan konfirmasi manual ol
 
 Google Analytics 4 bersifat opsional untuk web melalui `VITE_GA_ID`. Event: page view, add to cart, begin checkout, dan purchase. Data penerima tidak dikirim ke analytics. Tidak ada tracking bila ID kosong. Pasang kebijakan privasi/consent sesuai kebutuhan sebelum peluncuran publik. Mobile belum dilengkapi SDK monitoring tersendiri.
 
-## Deployment dan status
+## Deployment
 
-Lihat `docs/DEPLOYMENT.md`, `docs/ARCHITECTURE.md`, `docs/API.md`, dan `docs/VERIFICATION.md`. Konfigurasi Vercel/Netlify, Render, dan EAS tersedia. Repository belum di-push, layanan cloud belum dibuat, dan tidak ada link publik, QR cloud, atau APK yang diklaim telah terbit. Deployment membutuhkan akun serta konfigurasi milikmu.
+Repository: [sheisnthere/group-7-project](https://github.com/sheisnthere/group-7-project). Konfigurasi Vercel/Netlify, Render, dan EAS tersedia; layanan cloud dan APK belum dibuat. Petunjuk ada di [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
-## Siap upload Git
+## Alur Git
 
-Repository ini belum memiliki remote. Dari folder `labuibu`, jalankan:
+Buat branch sesuai bagian pekerjaan, misalnya `Frontend/nama-fitur`, `Backend/nama-fitur`, atau `Mobile/nama-fitur`. Push ke branch tersebut dan ajukan pull request ke `main` untuk ditinjau tim.
 
 ```sh
-git init
+git switch main
+git pull --ff-only
+git switch -c Frontend/nama-fitur
+# Kerjakan perubahan, lalu jalankan pnpm check.
 git add .
-git status
-git commit -m "Build Labuibu web, mobile and API"
-git branch -M main
-git remote add origin YOUR_REPOSITORY_URL
-git push -u origin main
+git commit -m "Describe the change"
+git push -u origin Frontend/nama-fitur
 ```
 
-Sebelum commit, periksa `git status`: `.env`, `node_modules`, dan hasil build tidak boleh terikut. Hanya root `pnpm-lock.yaml` yang digunakan. Nama paket Android/iOS `com.labuibu.app` harus disesuaikan bila akan dipublikasikan ke store dan belum kamu miliki.
+`.env`, dependency, dan hasil build tidak masuk Git. Gunakan satu `pnpm-lock.yaml` di root. Nama paket Android/iOS masih `com.labuibu.app`; sesuaikan sebelum publikasi ke store.
 
 Foto dan sumbernya tercantum di `docs/ASSETS.md`. Materi katalog, harga, deskripsi bahan, dan estimasi pengiriman adalah contoh yang perlu disesuaikan pemilik usaha sebelum dipakai untuk jualan.
 
@@ -117,12 +118,18 @@ Pembaruan katalog, migrasi data contoh, dan aturan pengiriman: `docs/CATALOG.md`
 
 ## Rekening transfer contoh
 
-Konfirmasi transfer bank menampilkan rekening BCA dummy atas nama PT. Anti Rezim Dzolim. Konfigurasi tunggal tersedia di `packages/contracts/src/payments.js` untuk web dan app. Nomor rekening ini hanya untuk simulasi dan harus diganti sebelum menerima pembayaran sungguhan. Tombol konfirmasi membuka Pesanan saya; pesanan demo terakhir ditampilkan tanpa menyimpan alamat atau nomor telepon dalam bukti pesanan.
+Konfirmasi transfer bank menampilkan rekening BCA dummy atas nama PT. Anti Rezim Dzolim. Konfigurasi tunggal tersedia di `packages/contracts/src/payments.ts` untuk web dan app. Nomor rekening ini hanya untuk simulasi dan harus diganti sebelum menerima pembayaran sungguhan. Tombol konfirmasi membuka Pesanan saya; pesanan demo terakhir ditampilkan tanpa menyimpan alamat atau nomor telepon dalam bukti pesanan.
 
 Menu akun mobile berurutan Pesanan saya, Cemilan favorit, dan Dapur Labuibu; setiap menu membuka halaman tersendiri. Web memakai `/pesanan-saya` dan `/favorit`. Desktop menampilkan pesanan serta favorit di akun, sementara Dapur Labuibu tetap di navigasi atas. Setiap kartu pesanan memakai satu thumbnail produk pertama, dengan ringkasan varian/jumlah, tanggal, status, dan total.
 
 ## Menjaga kualitas kode
 
-Jalankan `pnpm check` sebelum commit: lint, pemeriksaan format, test shared/API, lalu build web. `pnpm format` merapikan source. CI GitHub menjalankan pemeriksaan yang sama dan mengekspor bundle mobile. Source aplikasi berada di `web/`, `mobile/`, dan `backend/`; build hasil generate dan `.env` tidak masuk Git.
+Jalankan `pnpm check` sebelum commit: type-check, lint, pemeriksaan format, test shared/API, lalu build web. `pnpm format` merapikan source. CI GitHub menjalankan pemeriksaan yang sama dan mengekspor bundle mobile. Source aplikasi berada di `web/`, `mobile/`, dan `backend/`; build hasil generate dan `.env` tidak masuk Git.
 
-Aturan keranjang, pemisahan varian, favorit, payload item, snapshot receipt, format tanggal, serta transisi status ada di `packages/contracts/src/commerce.js`. Web dan app memakai UI masing-masing dengan aturan bisnis yang sama. Receipt tersimpan hanya berisi informasi konfirmasi; data penerima dan kredensial tidak disimpan di receipt. Detail struktur ada di [panduan pemeliharaan](docs/MAINTENANCE.md).
+Aturan keranjang, pemisahan varian, favorit, payload item, snapshot receipt, format tanggal, serta transisi status ada di `packages/contracts/src/commerce.ts`. Web dan app memakai UI masing-masing dengan aturan bisnis yang sama. Receipt tersimpan hanya berisi informasi konfirmasi; data penerima dan kredensial tidak disimpan di receipt. Detail struktur ada di [panduan pemeliharaan](docs/MAINTENANCE.md).
+
+## TypeScript
+
+Setiap workspace memiliki `tsconfig.json` yang mengacu pada `tsconfig.base.json`. Mode `strict` aktif. Tipe produk, keranjang, pengguna, dan pesanan berada di `packages/contracts/src/types.ts`; sebagian besar diturunkan dari skema Zod. Parameter navigasi app didefinisikan di `mobile/src/navigation.ts`.
+
+Jalankan `pnpm typecheck` untuk memeriksa semua workspace. TypeScript tidak menggantikan validasi Zod saat request atau data tersimpan dibaca. Backend dan test menjalankan file `.ts` langsung dengan type stripping bawaan Node.js 24; pemeriksaan tipe dilakukan terpisah. Gunakan sintaks TypeScript yang dapat dihapus, tanpa enum atau parameter properties. Web ditranspilasi Vite, sedangkan app ditranspilasi Metro.

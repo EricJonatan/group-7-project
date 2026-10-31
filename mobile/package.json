@@ -2,14 +2,15 @@
   "name": "@labuibu/mobile",
   "version": "1.0.0",
   "private": true,
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "export": "expo export --platform android --platform ios",
     "web": "expo start --web",
-    "export:preview": "expo export --platform web && node scripts/create-preview.cjs"
+    "export:preview": "expo export --platform web && node scripts/create-preview.cjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "@expo-google-fonts/dm-sans": "^0.4.2",

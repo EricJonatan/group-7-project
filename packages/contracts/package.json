@@ -4,12 +4,14 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.js",
-    "./catalog": "./src/catalog.js",
-    "./commerce": "./src/commerce.js"
+    ".": "./src/index.ts",
+    "./catalog": "./src/catalog.ts",
+    "./commerce": "./src/commerce.ts",
+    "./types": "./src/types.ts"
   },
   "scripts": {
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "zod": "^3.24.2"

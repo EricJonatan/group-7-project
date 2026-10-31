@@ -31,7 +31,7 @@ Contoh create order:
 
 ```json
 {
-  "items": [{ "productId": "keripik-original", "quantity": 2 }],
+  "items": [{ "productId": "keripik-labu", "variantId": "keripik-original", "quantity": 2 }],
   "shippingMethod": "regular",
   "paymentMethod": "bank_transfer",
   "customer": {
@@ -48,6 +48,6 @@ Contoh create order:
 
 Kirim header `Idempotency-Key` dengan UUID baru untuk tiap checkout. Retry request yang sama memakai key yang sama. Reuse key dengan payload berbeda menghasilkan 409. Jangan kirim unit price/total dari client: skema strict menolaknya. Quantity 1-99, maksimal 30 jenis item. Reguler Rp15.000, instan Rp25.000. Backend harus menjadi sumber akhir total pembayaran.
 
-Skema product lengkap dan update tersedia di `packages/contracts/src/index.js`. `id` tidak dapat diubah setelah dibuat. PATCH bersifat parsial; tidak perlu mengirim `_id`, timestamps, atau metadata MongoDB. Email dinormalisasi lowercase. Password minimal 8 dan maksimal 128 karakter. Pagination default 30, maksimum 100, skip maksimum 10.000. UI saat ini menampilkan halaman pertama.
+Skema product lengkap dan update tersedia di `packages/contracts/src/index.ts`. `id` tidak dapat diubah setelah dibuat. PATCH bersifat parsial; tidak perlu mengirim `_id`, timestamps, atau metadata MongoDB. Email dinormalisasi lowercase. Password minimal 8 dan maksimal 128 karakter. Pagination default 30, maksimum 100, skip maksimum 10.000. UI saat ini menampilkan halaman pertama.
 
 Kode umum: 400 validasi gagal, 401 sesi tidak valid, 403 akses ditolak, 404 data tidak ditemukan, 409 konflik, 429 terlalu banyak request, 500 gangguan server. Pesan internal database tidak diekspos ke client.

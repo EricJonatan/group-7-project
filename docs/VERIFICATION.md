@@ -4,7 +4,7 @@ Tanggal: 31 Oktober 2026. Source lokal menggunakan Node.js 24 dan pnpm 11.25. Da
 
 ## Pemeriksaan otomatis
 
-`pnpm check` berhasil: ESLint tanpa error, semua source yang diperiksa sesuai format Prettier, 11 test shared contracts/commerce lulus, 9 integration test API lulus, dan production build web berhasil.
+`pnpm check` berhasil: ESLint tanpa error, semua source yang diperiksa sesuai format Prettier, 13 test shared contracts/commerce lulus, 9 integration test API lulus, dan production build web berhasil.
 
 Test shared mencakup validasi seed dan payload, normalisasi email, pembatasan role, pemisahan varian, batas jumlah, perhitungan total, penghapusan item, favorit, aturan pengiriman, payload pesanan tanpa harga client, prioritas harga/ongkir server pada receipt, pembuangan data penerima/kredensial dari receipt, migrasi keranjang lama, JSON keranjang yang tidak valid, dan tanggal receipt yang rusak.
 
@@ -29,3 +29,7 @@ Pada build lokal ini, CSS utama turun dari sekitar 56,6 kB menjadi 47,3 kB (belu
 ## Batas verifikasi
 
 Hosting cloud, URL produksi, distribusi EAS, APK, QR cloud, analytics akun pengguna, dan perangkat fisik belum diverifikasi pada pekerjaan refactor ini. Pembayaran masih simulasi/manual dan ongkir berupa tarif contoh. Dokumentasi PDF lama tidak diperbarui atau disertakan dalam unggahan kode bersih. Konfigurasi CI disiapkan; hasil GitHub Actions harus diperiksa setelah repository menerima commit.
+
+## Migrasi TypeScript
+
+Branch `TypeScript` mengubah source web, app, backend, paket bersama, dan test menjadi `.ts`/`.tsx`. `pnpm typecheck` memeriksa kelima workspace dengan mode strict. CI menjalankan type-check sebelum lint, test, dan build. Pemeriksaan lokal migrasi lulus: strict type-check pada lima workspace, lint, format, 22 test runtime (13 shared dan 9 API), build web, serta export Android/iOS. Preview browser web dan app juga memuat katalog, detail produk, dan navigasi keranjang.
