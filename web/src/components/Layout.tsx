@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Menu, ShoppingBag, UserRound, X } from 'lucide-react';
+import { Menu, ShoppingCart, UserRound, X } from 'lucide-react';
 import { useShop } from '../store.tsx';
 import { Brand } from './Brand.tsx';
 
@@ -33,7 +33,7 @@ export function Header() {
           </Link>
           <span className="action-divider" />
           <Link className="bag-link" to="/keranjang" aria-label={`Shopping Cart, ${count} produk`}>
-            <ShoppingBag size={20} />
+            <ShoppingCart size={20} />
             <span className="cart-count">{count}</span>
           </Link>
           <button

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowRight, Heart, Plus, ShoppingBag, Truck } from 'lucide-react';
+import { ArrowRight, Heart, Plus, ShoppingCart, Truck } from 'lucide-react';
 import { useShop } from '../store.tsx';
 import { money, productId, selectVariant } from '../data.ts';
 import { CatalogState, Grid } from '../components/ProductGrid.tsx';
@@ -106,7 +106,7 @@ export function Detail() {
           <div className="purchase">
             <Quantity quantity={quantity} onChange={setQuantity} name={product.name} />
             <button className="button" onClick={() => add(chosen, quantity)}>
-              Tambah ke Keranjang <ShoppingBag size={17} />
+              Tambah ke Keranjang <ShoppingCart size={17} />
             </button>
           </div>
           <p className="small-note">

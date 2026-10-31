@@ -18,7 +18,6 @@ export default [
     files: [
       'web/**/*.{js,jsx,ts,tsx}',
       'mobile/**/*.{js,cjs,ts,tsx}',
-      'backend/**/*.{js,ts}',
       'packages/**/*.{js,ts}',
       'eslint.config.mjs',
     ],

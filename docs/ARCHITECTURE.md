@@ -1,35 +1,21 @@
-# Arsitektur Labuibu
+# Arsitektur frontend
 
 ```mermaid
 flowchart LR
-  W[Web React / Vercel] --> C[Shared Axios client]
-  M[Expo mobile / Android / iOS] --> C
-  C --> A[Express API / Render]
-  A --> DB[(MongoDB / Atlas)]
-  V[Shared Zod contracts] --> W
+  W[Web React] --> C[Shared Axios client]
+  M[React Native / Expo] --> C
+  C --> A[API milik tim backend]
+  V[Tipe dan skema Zod] --> W
   V --> M
-  V --> A
   W --> G[Google Analytics opsional]
 ```
 
-`web` memiliki React Router, HTML/CSS responsif, sesi token di sessionStorage, keranjang/favorit di localStorage, dan dashboard admin. SessionStorage dipilih untuk membatasi durasi token di browser; token masih dapat diakses JavaScript, sehingga pencegahan XSS tetap penting. Web dapat berjalan dalam mode demo eksplisit bila URL API tidak diisi.
+`web/` menangani desktop dan mobile web dengan React Router dan CSS responsif. Token sesi berada di sessionStorage; keranjang dan favorit berada di localStorage. Halaman selain Home dimuat saat dibutuhkan.
 
-`mobile` menggunakan native-stack dan bottom tabs dari React Navigation, SecureStore untuk token JWT, serta AsyncStorage untuk keranjang, favorit, dan receipt terakhir. App menyediakan mode demo saat URL API kosong. Foto katalog dan font dibundel untuk pemakaian offline; URL web dipakai untuk gambar baru dari API.
+`mobile/` memakai React Navigation, SecureStore untuk token, dan AsyncStorage untuk keranjang, favorit, serta receipt terakhir. Foto katalog dan font dibundel. Preview browser merender komponen app yang sama, tetapi pengujian ponsel tetap diperlukan.
 
-`packages/api-client` memiliki adapter token asinkron yang kompatibel dengan sessionStorage dan SecureStore. `packages/contracts` menyediakan skema validasi Zod, data seed, fungsi format rupiah, harga ongkir, serta aturan keranjang dan receipt yang dipakai web/app. Web, mobile, dan backend berbagi kontrak, tetapi setiap platform tetap memiliki komponen UI sendiri.
+`packages/api-client/` menyediakan Axios client, header Bearer token, dan penanganan error bersama. `packages/contracts/` berisi skema Zod, tipe domain, katalog demo, format rupiah, serta aturan keranjang, pengiriman, dan receipt. Komponen UI tetap terpisah sesuai platform.
 
-`backend` menyimpan pengguna, produk, dan pesanan dalam MongoDB melalui Mongoose. Password di-hash bcrypt. JWT memiliki algoritma, issuer, audience, subject, expiry 1 hari, dan versi token. Middleware mengambil pengguna dari database setiap request, sehingga perubahan role, penghapusan akun, dan logout segera berlaku. Role admin dibuat lewat seed, bukan registrasi publik.
+Tanpa URL API, web dan app menjalankan mode demo. Jika URL diisi, keduanya memakai endpoint dalam `docs/API.md`. Autentikasi, penyimpanan database, izin pengguna, perhitungan harga akhir, idempotensi checkout, dan deployment server ditangani tim backend. Validasi frontend membantu pengguna mengisi form; server tetap harus memvalidasi setiap request.
 
-Model User berisi nama, email unik, passwordHash, role, tokenVersion, dan timestamps. PasswordHash tidak diserialisasi. Product memakai slug `id` unik, nama, kategori, harga dalam rupiah integer, ukuran, badge, gambar, deskripsi, bahan/alergen, penyimpanan, dan status aktif. Order menyimpan owner userId, snapshot item dan harga saat order, data penerima, ongkir, total, metode pengiriman/pembayaran, status, requestHash, dan idempotencyKey. Unique index `(userId, idempotencyKey)` mencegah order ganda dalam retry paralel. Index dibuat sebelum menerima transaksi pada database baru; seed menginisialisasi index, dan Mongoose juga menginisialisasi model saat server berjalan.
-
-API menghitung harga dari produk aktif, menolak item ganda/quantity tidak valid, dan menyimpan snapshot harga historis. Total yang ditampilkan sebelum submit bersifat estimasi; receipt memakai total yang dikembalikan server. Transisi status: processing ke shipped/cancelled, shipped ke completed. Update status memiliki pemeriksaan konkurensi.
-
-Penghapusan produk menonaktifkan katalog. Penghapusan akun customer melalui API menghapus order customer sebelum menghapus pengguna. Akun admin dilindungi dari endpoint delete. Operasi hapus akun tidak memakai transaksi database; jika error terjadi di antara penghapusan order dan pengguna, pengguna dapat mencoba kembali. Untuk penggunaan produksi, pertimbangkan kebijakan retensi/audit dan transaksi sesuai kebutuhan bisnis.
-
-Rate limiter disimpan dalam memori proses; untuk beberapa instance API, gunakan shared store. Tidak tersedia refresh token, pemulihan kata sandi, verifikasi email, payment gateway, stock reservation, ongkir kurir nyata, atau upload gambar. Produk menggunakan path gambar bawaan atau URL HTTPS. Seluruh batasan ini terlihat di dokumentasi dan tidak disamarkan sebagai integrasi aktif.
-
-## Tipe data
-
-Semua aplikasi menggunakan TypeScript dengan `strict: true`. Kontrak API dan tipe domain berada di `packages/contracts/src/types.ts`, termasuk hasil inferensi skema Zod. Props React dan parameter navigasi React Native memiliki tipe tersendiri. Middleware Express menambahkan dokumen pengguna bertipe pada request setelah autentikasi.
-
-Data dari jaringan dan storage tetap perlu divalidasi saat runtime. TypeScript memeriksa pemakaian data dalam source; Zod memvalidasi payload API, sedangkan pembacaan receipt dan keranjang memeriksa bentuk data tersimpan.
+Semua workspace memakai TypeScript strict. Konfigurasi bersama berada di `tsconfig.base.json`; tipe domain ada di `packages/contracts/src/types.ts`. Data dari jaringan dan penyimpanan tetap memerlukan pemeriksaan runtime. Source server, konfigurasi database, dan deployment backend tidak disertakan.

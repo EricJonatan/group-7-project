@@ -62,7 +62,7 @@ function CartAction({ compact = false }: { compact?: boolean }) {
         gap: 5,
       }}
     >
-      <Icon name="bag" color={colors.ink} />
+      <Icon name="cart" color={colors.ink} />
       {count > 0 && (
         <View
           style={{
