@@ -1,0 +1,19 @@
+node_modules/
+dist/
+.expo/
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.log
+.DS_Store
+coverage/
+*.apk
+*.aab
+*.ipa
+tmp/
+output/
+
+# Historical local design proofs and document exports
+/docs/*.png
+/docs/*.pdf

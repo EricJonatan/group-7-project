@@ -1,0 +1,9 @@
+node_modules/
+**/dist/
+**/.expo/
+output/
+tmp/
+mobile/assets/
+web/public/
+docs/
+pnpm-lock.yaml

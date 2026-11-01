@@ -1,0 +1,21 @@
+{
+  "name": "@labuibu/web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@labuibu/api-client": "workspace:*",
+    "@labuibu/contracts": "workspace:*",
+    "lucide-react": "^0.468.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-router-dom": "^6.28.1",
+    "vite": "^6.0.7"
+  }
+}
