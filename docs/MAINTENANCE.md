@@ -1,36 +1,33 @@
-# Pemeliharaan frontend
+# Pemeliharaan source
 
-`web/` berisi desktop dan mobile web. `mobile/` berisi app Expo. Jalankan pnpm dari root agar paket bersama ikut tersedia. Backend dikerjakan terpisah; perubahan API perlu disepakati dengan anggota tim yang mengelolanya.
+## Batas tiap aplikasi
 
-## Lokasi perubahan
+`web/` menangani desktop web dan mobile web melalui CSS responsif. `mobile/` adalah app Android/iOS Expo; preview browser merender komponen native yang sama. `backend/` menyediakan REST API Express + MongoDB. Jalankan perintah pnpm dari root agar workspace shared ikut tersedia.
 
-| Bagian | Lokasi |
+Komponen tampilan tetap spesifik platform. Aturan harga, keranjang, atau pesanan berada di `packages/contracts/src/commerce.ts`, sedangkan validasi payload ada di `packages/contracts/src/index.ts` dan katalog/varian di `catalog.ts`.
+
+## Peta perubahan
+
+| Perubahan | Lokasi |
 | --- | --- |
 | Halaman web | `web/src/pages/` |
-| Komponen web | `web/src/components/` |
-| Navigasi dan state web | `web/src/App.tsx`, `web/src/store.tsx` |
+| UI bersama web | `web/src/components/` |
+| Navigasi web dan pemuatan halaman | `web/src/App.tsx` |
+| State/sesi web | `web/src/store.tsx` |
 | Halaman app | `mobile/src/screens/` |
-| Komponen app | `mobile/src/components/`, `mobile/src/ui.tsx` |
-| Navigasi dan state app | `mobile/src/App.tsx`, `mobile/src/store.tsx` |
-| API dan konfigurasi app | `mobile/src/api.ts`, `mobile/src/config.ts` |
+| UI bersama app | `mobile/src/components/`, `mobile/src/ui.tsx` |
+| Navigasi app | `mobile/src/App.tsx` |
+| API dan token app | `mobile/src/api.ts`, `mobile/src/config.ts` |
 | Penyimpanan app | `mobile/src/storage.ts` |
-| Kontrak dan aturan bersama | `packages/contracts/src/` |
+| Endpoint & controller API | `backend/src/routes/`, `backend/src/controllers/` |
+| Model MongoDB | `backend/src/models/` |
+| Payload dan aturan bisnis | `packages/contracts/src/` |
 | Axios bersama | `packages/api-client/src/` |
-
-Aturan keranjang, varian, ongkir, dan receipt berada di `commerce.ts`. Validasi payload ada di `index.ts`, tipe domain di `types.ts`, dan katalog demo di `catalog.ts`. Hindari menyalin aturan ini ke setiap halaman.
 
 ## Styling
 
-Stylesheet web memakai urutan `styles.css`, `commerce.css`, lalu `typography.css`. `about.css` dimuat bersama halaman Dapur. Pilihan varian app menggunakan style chip; kartu katalog hanya menampilkan foto, nama, harga, dan kontrol favorit.
+Urutan stylesheet web dipertahankan: `styles.css` untuk layout dasar, `commerce.css` untuk ukuran ecommerce dan grid, `typography.css` untuk aturan tampilan akhir/responsif. `about.css` hanya dimuat bersama halaman Dapur.
 
 ## Pemeriksaan
 
-Jalankan `pnpm check` sebelum commit dan `pnpm mobile:export` setelah mengubah app atau paket bersama. Preview browser dapat dibuat dengan `pnpm --filter @labuibu/mobile export:preview`.
-
-Untuk checkout, periksa pilihan varian, batas jumlah, ongkir produk segar, payload tanpa harga client, harga server pada receipt, retry dengan idempotency key, dan pembersihan keranjang setelah sukses. Receipt tersimpan tidak boleh memuat data penerima atau kredensial. Safe area Android dan distribusi APK perlu diperiksa pada perangkat.
-
-Mode demo dapat berjalan tanpa backend. Pengujian login, checkout, dan riwayat terhadap server nyata dilakukan bersama tim backend setelah URL API tersedia.
-
-## TypeScript dan Git
-
-Setiap workspace memiliki `tsconfig.json` dengan konfigurasi dasar di root. Gunakan tipe bersama jika dipakai web dan app. Kerjakan perubahan di branch, push ke branch tersebut, lalu ajukan pull request; jangan push langsung ke `main`.
+`pnpm check` menjalankan typecheck, lint, format check, unit test kontrak/keranjang/receipt, dan build web. `pnpm mobile:export` memeriksa bundling Android/iOS.

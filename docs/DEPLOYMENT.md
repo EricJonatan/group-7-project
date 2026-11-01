@@ -1,35 +1,49 @@
-# Deployment frontend
+# Panduan Deployment Cloud
 
-Backend dikelola anggota tim lain. Minta URL API HTTPS yang sesuai dengan `docs/API.md` dan pastikan origin web diizinkan oleh konfigurasi CORS server. Tidak ada server atau database yang di-deploy dari branch ini.
+Berikut adalah panduan deployment untuk seluruh ekosistem Labuibu (Web, Backend API, Database MongoDB, dan Mobile Expo).
 
-## Web di Vercel
+## 1. MongoDB Atlas & Backend API (Render / Vercel)
 
-Import repository, pilih Root Directory `web`, Framework Vite, dan Node.js 24. Izinkan akses source di luar Root Directory agar paket bersama dapat dibaca. `web/vercel.json` mengatur install workspace, build, output `dist`, dan rewrite React Router.
+1. Buat cluster MongoDB Atlas (M0 Free Tier) dan user database.
+2. Atur IP Access List ke `0.0.0.0/0` (Allow Access from Anywhere).
+3. Salin connection string `mongodb+srv://...`.
+4. Di Render, buat Web Service baru dari repositori ini:
+   - Branch: `main`
+   - Build Command: `corepack enable && pnpm install`
+   - Start Command: `pnpm --filter @labuibu/api start`
+   - Health check: `/health`
+   - Environment: `NODE_ENV=production`, `MONGODB_URI`, `JWT_SECRET`, `CORS_ORIGINS=*`.
+5. Jalankan seed awal katalog:
+   ```bash
+   pnpm seed
+   ```
+6. Simpan URL API live yang diberikan (misal: `https://YOUR_API_HOST/api`).
 
-Isi `VITE_API_URL` dengan URL API termasuk `/api`. `VITE_GA_ID` opsional. Environment Vite dibaca saat build, sehingga perubahan nilainya memerlukan redeploy. Nilai URL API kosong mengaktifkan mode demo.
+## 2. Frontend Web (Vercel)
 
-## Web di Netlify
+1. Import repositori di Vercel.
+2. Pengaturan project:
+   - **Root Directory**: `web`
+   - **Framework Preset**: `Vite`
+   - Aktifkan opsi "Include files outside Root Directory" (untuk monorepo packages).
+3. Environment variables:
+   - `VITE_API_URL`: URL Backend API lengkap dengan `/api`.
+   - `VITE_GA_ID`: Measurement ID Google Analytics (`G-XXXXXXXXXX`).
+4. Klik Deploy. Rewrite SPA sudah diatur otomatis oleh `web/vercel.json`.
 
-Gunakan root repository sebagai base directory. `netlify.toml` mengatur build web dan publish `web/dist`. Isi environment yang sama dengan Vercel. Rewrite React Router tersedia di `web/public/_redirects`.
+## 3. Mobile App (Expo & EAS Build APK)
 
-## App Expo
-
-Isi `EXPO_PUBLIC_API_URL` dengan URL API HTTPS dan `EXPO_PUBLIC_WEB_URL` dengan origin web. Nilai ini masuk ke bundle, jadi jangan isi secret. Jalankan `pnpm mobile:check` dari root.
-
-Untuk Expo Go lokal, jalankan `pnpm dev:mobile` lalu scan QR yang ditampilkan. Gunakan Expo Go yang kompatibel SDK 58 atau development build. QR lokal bergantung pada Metro dan jaringan aktif.
-
-Untuk APK, jalankan dari `mobile/`:
-
-```sh
-pnpm dlx eas-cli login
-pnpm dlx eas-cli build:configure
-pnpm dlx eas-cli build --platform android --profile preview
-```
-
-EAS akan menghubungkan project ke akun pengguna. Periksa perubahan app config sebelum commit. Profil preview menghasilkan APK distribusi internal. Simpan link artifact dan QR dari EAS setelah build selesai. Konfigurasi saat ini belum mengaktifkan OTA karena project EAS belum dihubungkan.
-
-## Setelah deployment
-
-Periksa akses langsung ke `/produk/keripik-labu`, login/registrasi, varian dan jumlah di shopping cart, checkout dengan alamat, konfirmasi, serta riwayat pesanan. Cocokkan harga dan ongkir dari server. Uji app pada ponsel dan periksa gambar baru dari API.
-
-Rekening transfer, harga, ongkir, dan materi katalog masih contoh. Belum ada payment gateway. Web cloud, distribusi Expo, dan APK belum dibuat pada pekerjaan ini; isi link setelah deployment berhasil.
+1. Isi file `mobile/.env` dengan URL API produksi:
+   ```env
+   EXPO_PUBLIC_API_URL=https://YOUR_API_HOST/api
+   EXPO_PUBLIC_WEB_URL=https://YOUR_WEB_HOST
+   ```
+2. Untuk demo lokal: `pnpm dev:mobile` lalu scan QR Code via Expo Go.
+3. Untuk build file installer `.apk` mandiri (Android):
+   ```bash
+   cd mobile
+   pnpm dlx eas-cli login
+   pnpm dlx eas-cli build:configure
+   pnpm dlx eas-cli build --platform android --profile preview
+   ```
+   Setelah selesai, EAS Cloud menyediakan link download file `.apk` dan QR Code unduhan.

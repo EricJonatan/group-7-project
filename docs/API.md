@@ -1,6 +1,4 @@
-# Kontrak integrasi API frontend
-
-Dokumen ini menjelaskan format yang diharapkan web dan app. Implementasi server dikerjakan terpisah oleh tim backend. Endpoint dan perilaku di bawah perlu dicocokkan saat integrasi; ini bukan laporan pengujian server.
+# REST API
 
 Base URL: `http://localhost:4000/api` atau URL deployment ditambah `/api`. Respons sukses berbentuk `{ "data": ... }`. Error berbentuk `{ "message": "...", "errors": [...] }` untuk validasi. Token dikirim melalui `Authorization: Bearer TOKEN`.
 
@@ -27,6 +25,8 @@ Base URL: `http://localhost:4000/api` atau URL deployment ditambah `/api`. Respo
 | GET | /orders/:id | Pemilik/admin | Detail order |
 | PATCH | /orders/:id/status | Admin | Transisi status terkontrol |
 
+`GET /health` berada di luar `/api`, mengembalikan 200 hanya saat MongoDB terhubung. Server tidak menerima request sebelum koneksi database awal berhasil.
+
 Contoh create order:
 
 ```json
@@ -48,6 +48,6 @@ Contoh create order:
 
 Kirim header `Idempotency-Key` dengan UUID baru untuk tiap checkout. Retry request yang sama memakai key yang sama. Reuse key dengan payload berbeda menghasilkan 409. Jangan kirim unit price/total dari client: skema strict menolaknya. Quantity 1-99, maksimal 30 jenis item. Reguler Rp15.000, instan Rp25.000. Backend harus menjadi sumber akhir total pembayaran.
 
-Skema product lengkap dan update yang dipakai frontend tersedia di `packages/contracts/src/index.ts`. `id` tidak dapat diubah setelah dibuat. PATCH bersifat parsial; tidak perlu mengirim `_id`, timestamps, atau metadata database. Email dinormalisasi lowercase. Password minimal 8 dan maksimal 128 karakter. UI saat ini meminta halaman pertama. Sepakati batas pagination dengan tim backend.
+Skema product lengkap dan update tersedia di `packages/contracts/src/index.ts`. `id` tidak dapat diubah setelah dibuat. PATCH bersifat parsial; tidak perlu mengirim `_id`, timestamps, atau metadata MongoDB. Email dinormalisasi lowercase. Password minimal 8 dan maksimal 128 karakter. Pagination default 30, maksimum 100, skip maksimum 10.000. UI saat ini menampilkan halaman pertama.
 
-Kode umum: 400 validasi gagal, 401 sesi tidak valid, 403 akses ditolak, 404 data tidak ditemukan, 409 konflik, 429 terlalu banyak request, 500 gangguan server. Server perlu menyaring pesan internal sebelum mengirim error ke client.
+Kode umum: 400 validasi gagal, 401 sesi tidak valid, 403 akses ditolak, 404 data tidak ditemukan, 409 konflik, 429 terlalu banyak request, 500 gangguan server. Pesan internal database tidak diekspos ke client.

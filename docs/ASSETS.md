@@ -36,3 +36,4 @@ Foto keripik terkini: [Chips in a Bowl - Pexels, foto 19141651](https://www.pexe
 ## Aset app
 
 Foto yang sama disalin ke `mobile/assets/images` dan dirujuk dari `mobile/src/images.ts` agar katalog bawaan tidak bergantung pada hosting web. Sumber dan lisensi foto mengikuti tabel di atas. Logo dan ikon app berupa SVG komponen antarmuka.
+
