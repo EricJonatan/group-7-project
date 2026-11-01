@@ -15,17 +15,14 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // --- CORS ---
-const origins = (process.env.CLIENT_ORIGINS || '')
-  .split(',')
-  .map((o) => o.trim())
-  .filter(Boolean);
-
 app.use(
   cors({
-    origin: origins.length > 0 ? origins : true, // true = reflect request origin (allow all)
-    credentials: true,
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Idempotency-Key'],
   }),
 );
+
 
 // --- Body parsing ---
 app.use(express.json());
@@ -48,8 +45,13 @@ app.get('/', (_req: Request, res: Response) => {
 
 // --- Routes ---
 app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
+
 app.use('/api/products', productRoutes);
+app.use('/products', productRoutes);
+
 app.use('/api/users', userRoutes);
+app.use('/users', userRoutes);
 
 // --- 404 handler ---
 app.use((_req: Request, res: Response) => {

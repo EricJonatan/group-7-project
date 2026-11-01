@@ -63,11 +63,31 @@ export function ShopProvider({ children }: React.PropsWithChildren) {
     setLoading(true);
     setCatalogError('');
     try {
-      const data = unwrap<Product[]>(await api.get('/products'));
-      if (!Array.isArray(data)) throw new Error();
-      setProducts(data.map((p) => ({ ...p, id: productId(p) })));
-    } catch {
-      setCatalogError('Camilan belum bisa dimuat. Periksa koneksi lalu coba lagi.');
+      const res = await api.get('/products');
+      const data = unwrap<Product[]>(res);
+      if (Array.isArray(data) && data.length > 0) {
+        setProducts(
+          data.map((p) => {
+            const id = productId(p);
+            const demo = demoProducts.find(
+              (d) => d.name.toLowerCase() === p.name.toLowerCase() || d.id === id,
+            );
+            return {
+              ...demo,
+              ...p,
+              id: id || demo?.id || '',
+              badge: p.badge || demo?.badge || 'Buatan rumahan',
+              unit: p.unit || demo?.unit || 'kemasan',
+              variants: p.variants && p.variants.length > 0 ? p.variants : demo?.variants,
+            };
+          }),
+        );
+      } else {
+        setProducts(demoProducts);
+      }
+    } catch (err) {
+      console.warn('API error, falling back to local catalog:', err);
+      setProducts(demoProducts);
     } finally {
       setLoading(false);
     }
